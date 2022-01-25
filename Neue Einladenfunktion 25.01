@@ -1,0 +1,157 @@
+public void bEinladenbestaetigen_ActionPerformed(ActionEvent evt) {
+
+	  String filter = jComboBoxEinladen.getSelectedItem().toString();
+	  String einzuladender = jComboBoxFilter.getSelectedItem().toString();
+	  String filepath = aktuellerPfad + "\\Eingeladen.csv";
+	  
+	  if(filter == "Benutzer") {
+		  //Test: Nutzer ist noch nicht eingeladen
+		  try{
+			  BufferedReader br = new BufferedReader(new FileReader(filepath));
+			String line = br.readLine();
+        	String [] values = line.split(";");
+        	for(int i = 0; i < values.length; i++) {
+	        	if(values[i].equals(einzuladender)) {
+	        		return;
+	        	}
+        	}
+		  }catch(Exception e) {
+		  }
+	      
+	      //funktionaler Code
+	    try {
+	    	FileWriter fw= new FileWriter(filepath, true);
+	    	BufferedWriter bw = new BufferedWriter(fw);
+	      PrintWriter pw = new PrintWriter(bw);
+	      
+	      pw.print(";" + einzuladender);
+	      pw.flush();
+	      pw.close();
+	      
+	      BufferedReader br = new BufferedReader(new FileReader(kundenListenPfad));
+			String line="";
+			
+	      while((line = br.readLine()) != null) {
+        	String [] values = line.split(";");
+        	if(values[0].equals(einzuladender)) {
+        		    FileWriter fwe= new FileWriter(serverPfad + values[4] + "\\Eingeladen von.csv", true);
+        	      	BufferedWriter bwe = new BufferedWriter(fwe);
+        	      	PrintWriter pwe = new PrintWriter(bwe);
+        	      	
+        	      	System.out.println("hi");
+        	      	
+          	      	pwe.print(";" + angemeldeterNutzer.getNutzername());
+          	      	
+          	      pwe.flush();
+        	      pwe.close();
+        	}
+        }
+	      
+	      
+	      }catch(Exception e) {
+	        JOptionPane.showMessageDialog(null, "Es ist etwas schief gelaufen.");
+    		return;
+	      }
+	  }
+  	else if(filter == "Abteilung"){
+  		try {
+  			BufferedReader br = new BufferedReader(new FileReader(kundenListenPfad));
+  			String line="";
+  			
+	    	FileWriter fw= new FileWriter(filepath, true);
+	    	BufferedWriter bw = new BufferedWriter(fw);
+	      PrintWriter pw = new PrintWriter(bw);
+	      
+	      while((line = br.readLine()) != null) {
+          	String [] values = line.split(";");
+          	if(values[5].equals(einzuladender)) {
+          	//Test: Nutzer ist noch nicht eingeladen
+          		int checkDoubles = 0;
+          		
+          		try{
+      			  BufferedReader br2 = new BufferedReader(new FileReader(filepath));
+      			String line2 = br2.readLine();
+              	String [] values2 = line2.split(";");
+              	for(int i = 0; i < values2.length; i++) {
+              		if(values2[i].equals(values[0])) {
+      	          		checkDoubles++;
+      	        	}
+              	}
+      		  }catch(Exception e) {
+      		  }
+          		
+          		if(checkDoubles == 0) {
+          			pw.print(";" + values [0]);
+
+          			FileWriter fwe= new FileWriter(serverPfad + values[4] + "\\Eingeladen von.csv", true);
+          	      	BufferedWriter bwe = new BufferedWriter(fwe);
+          	      	PrintWriter pwe = new PrintWriter(bwe);
+          	      	        	      	
+          	      	pwe.print(";" + angemeldeterNutzer.getNutzername());
+          	      	
+          	      pwe.flush();
+        	      pwe.close();
+          		}
+          	}
+          }
+	      pw.flush();
+	      pw.close();
+	      
+	      }catch(Exception e) {
+	        JOptionPane.showMessageDialog(null, "Es ist etwas schief gelaufen.");
+    		return;
+	      }
+  	} else {
+    	JOptionPane.showMessageDialog(null, "Bitte wählen sie einen Filter aus.");
+    }
+  } 
+
+  public void bFilterbestaetigen_ActionPerformed(ActionEvent evt) {
+	  String filter = jComboBoxEinladen.getSelectedItem().toString();
+	  if(filter == "Benutzer"){
+		  String path = kundenListenPfad;
+		  String line = "";
+		  String[] tempNutzers = new String[] {};
+		        try {
+		            BufferedReader br = new BufferedReader(new FileReader(path));
+		            
+		            
+		            while((line = br.readLine()) != null) {
+		            	String [] values = line.split(";");
+		            	int l = tempNutzers.length;
+		            	String [] tempString = new String[l+1];
+		            	for(int i = 0; i < l; i++) {
+		            		tempString[i] = tempNutzers[i];
+		            	}
+		            	tempString[l] = values [0];
+		            	tempNutzers = tempString;
+		            }
+		        } catch (FileNotFoundException e) {
+	                e.printStackTrace();
+		        } catch (IOException e) {
+	                e.printStackTrace();
+		        }    
+	      String comboBox2Liste1[] = tempNutzers;
+	      DefaultComboBoxModel model2 = new DefaultComboBoxModel(comboBox2Liste1);
+	      jComboBoxFilter.setModel(model2);
+	    }
+	    else if(filter == "Abteilung") {
+	    	String path = serverPfad + "\\Abteilung.csv";
+	    	  String line = "";
+	    	  String[] tempAbteilungen = new String[] {};
+	    	        try {
+	    	            BufferedReader br = new BufferedReader(new FileReader(path));
+	    	            
+	    	            line = br.readLine();
+	    	            tempAbteilungen = line.split(";");
+	    	        } catch (FileNotFoundException e) {
+	    	                e.printStackTrace();
+	    	        } catch (IOException e) {
+	    	                e.printStackTrace();
+	    	        }
+	      DefaultComboBoxModel model3 = new DefaultComboBoxModel(tempAbteilungen);
+	      jComboBoxFilter.setModel(model3);
+	    } else {
+	    	JOptionPane.showMessageDialog(null, "Bitte wählen sie einen Filter aus.");
+	    }
+  } 
