@@ -3,6 +3,11 @@
    * "jComboBoxFilter".
    */
   public void bEinladenbestaetigen_ActionPerformed(ActionEvent evt) {
+  	
+	  if(aktuellerPfad.equals(serverPfad + values[5])) {
+		  JOptionPane.showMessageDialog(null, "Auf dem ausgewählten Ordner kann keine Einladung stattfinden");
+		  return;
+	  }
 
 	  String filter = jComboBoxEinladen.getSelectedItem().toString();
 	  String einzuladender = jComboBoxFilter.getSelectedItem().toString();
